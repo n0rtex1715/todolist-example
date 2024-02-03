@@ -1,2 +1,2 @@
-# todolist-example
-Todolist example (lab)
+# Todolist Example (Laba)
+### VKI24
