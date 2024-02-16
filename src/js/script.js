@@ -1,5 +1,9 @@
 // .ready() -> срабатывает только при полной загрузке страницы
 $(document).ready(function () {
+
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
     // Инициализируем задачи из localstorage, если они имеются
     let tasks = loadTasks();
 
@@ -62,15 +66,15 @@ $(document).ready(function () {
         // Выводим список задач в UI
         filteredTasks.forEach(task => {
             // Добавляем новый элемент <li> под отображение задачи
-            let listItem = $('<li class="list-group-item"></li>');
-            // С помощью функции getAlertClass() вставляем нужный Bootstrap стиль для alert (см. функцию)
-            listItem.append(`<div class="task-name alert ${getAlertClass(task)}">${task.name}</div>`);
+            let listItem = $('<div class="p-2 border border-2 border-white rounded task bg-dark mb-3"></div>');
+            // С помощью функции getBorderClass() вставляем нужный Bootstrap стиль для border (см. функцию)
+            listItem.append(`<div class="task-name p-2 mb-3 text-center text-white border border-2 rounded ${getBorderClass(task)} bg-opacity-25 ${getBackClass(task)}">${task.name}</div>`);
 
             // Блок с кнопками
-            let actionButtons = $('<div class="float-end"></div>');
+            let actionButtons = $('<div class="float-end mb-2"></div>');
 
             // Кнопка для отметки задачи как выполненной или удаления
-            let completeButton = $('<button class="btn btn-sm"></button>');
+            let completeButton = $('<button class="btn btn-sm mx-2 border-white"></button>');
             
             // Если задача находится в корзине,
             if (task.trashed) {
@@ -93,11 +97,11 @@ $(document).ready(function () {
             }
 
             // Кнопка для добавления в корзину / полного удаления
-            let trashButton = $('<button class="btn btn-sm"></button>');
+            let trashButton = $('<button class="btn btn-sm mx-2 border-white"></button>');
             // Вывод соответствующей иконки
             trashButton.append(task.trashed
-                ? '<i class="bi bi-arrow-counterclockwise" text-primary"></i>'
-                : '<i class="bi bi-archive-fill text-secondary"></i>'
+                ? '<i class="bi bi-arrow-counterclockwise text-white"></i>'
+                : '<i class="bi bi-archive-fill text-white"></i>'
             );
             // Обработчик на смену статуса
             trashButton.on('click', function () {
@@ -105,7 +109,7 @@ $(document).ready(function () {
             });
 
             // Кнопка для переименовывания
-            let renameButton = $('<button class="btn btn-sm btn-info ms-2"></button>');
+            let renameButton = $('<button class="btn btn-sm btn-info mx-2 border-white"></button>');
             renameButton.append('<i class="bi bi-pencil"></i>');
             renameButton.on('click', function () {
                 let newName = prompt('Введите новое название:', task.name);
@@ -126,13 +130,24 @@ $(document).ready(function () {
     }
 
     // Ф: Смена стиля рамки задачи в зависимости от статуса задачи
-    function getAlertClass(task) {
+    function getBorderClass(task) {
         if (task.completed) {
-            return 'alert-success';
+            return 'border-success';
         } else if (task.trashed) {
-            return 'alert-secondary';
+            return 'border-secondary';
         } else {
-            return 'alert-warning';
+            return 'border-warning';
+        }
+    }
+
+    // Ф: Смена стиля фона задачи в зависимости от статуса задачи
+    function getBackClass(task) {
+        if (task.completed) {
+            return 'bg-success';
+        } else if (task.trashed) {
+            return 'bg-secondary';
+        } else {
+            return 'bg-warning';
         }
     }
 
